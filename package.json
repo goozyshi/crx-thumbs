@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "crx": "npm run build-watch",
+    "alpha": "vue-cli-service build --mode alpha",
     "build-watch": "vue-cli-service build-watch"
   },
   "dependencies": {
