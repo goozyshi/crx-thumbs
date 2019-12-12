@@ -1,17 +1,17 @@
 <template>
   <div class="main_app">
     <h1>Hello popasdasdup</h1>
-    <HelloWolrd></HelloWolrd>
+    <MyClock></MyClock>
     <test></test>
   </div>
 </template>
 
 <script>
-import HelloWolrd from '../../components/HelloWorld'
+import MyClock from '../../components/myclock/myClock'
 import test from './test/test'
 export default {
   name: 'app',
-  components: { HelloWolrd, test }
+  components: { MyClock, test }
 }
 </script>
 
