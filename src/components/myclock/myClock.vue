@@ -1,28 +1,23 @@
 <template>
   <div class="hello">
     {{time}}
-    {{tab}}
   </div>
 </template>
 
 <script>
+import formatTime from './formatTime'
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      time: new Date(),
+      time: '',
       tab: ''
     }
   },
   mounted () {
     setInterval (() => {
-      this.time = new Date()
+      this.time = formatTime(new Date(), 'yyyy-MM-dd hh:mm:ss')
     }, 1000)
-    chrome.tabs.query({
-        active: true
-    }, function(tabArray){
-        console.log(tabArray);
-    });
   }
 }
 </script>
