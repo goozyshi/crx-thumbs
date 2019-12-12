@@ -27,8 +27,8 @@ const plugins =
           to: `${path.resolve("dist")}/manifest.json`
         }
       ];
-
 module.exports = {
+  assetsDir: 'assets',
   pages: pagesObj,
   configureWebpack: {
     plugins: [CopyWebpackPlugin(plugins)]
