@@ -2,16 +2,14 @@
   <div class="main_app">
     <h1>Hello popasdasdup</h1>
     <MyClock></MyClock>
-    <test></test>
   </div>
 </template>
 
 <script>
 import MyClock from '../../components/myclock/myClock'
-import test from './test/test'
 export default {
   name: 'app',
-  components: { MyClock, test }
+  components: { MyClock }
 }
 </script>
 

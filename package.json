@@ -5,6 +5,8 @@
   "scripts": {
     "crx": "npm run build-watch",
     "alpha": "vue-cli-service build --mode alpha",
+    "size": "npm run build --report",
+    "build": "vue-cli-service build",
     "build-watch": "vue-cli-service build-watch"
   },
   "dependencies": {

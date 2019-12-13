@@ -6,6 +6,7 @@
 
 <script>
 import formatTime from './formatTime'
+import BrowserGesture from '../gesture'
 export default {
   name: 'HelloWorld',
   data () {
@@ -15,6 +16,7 @@ export default {
     }
   },
   mounted () {
+    new BrowserGesture()
     setInterval (() => {
       this.time = formatTime(new Date(), 'yyyy-MM-dd hh:mm:ss')
     }, 1000)

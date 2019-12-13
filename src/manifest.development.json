@@ -2,6 +2,11 @@
 	"manifest_version": 2,
 	"name": "thumbs",
 	"description": "gesture && translate && time-tracker",
+	"icons": {
+		"19": "./assets/icon/icon_19.png",
+		"38": "./assets/icon/icon_38.png",
+		"76": "./assets/icon/icon_76.png"
+	},
 	"version": "0.0.1",
 	"options_page": "options.html",
 	"browser_action": {
@@ -13,5 +18,10 @@
 		},
 		"default_popup": "popup.html"
 	},
+	"content_scripts": [{
+		"matches": ["https://*/*","http://*/*"],
+		"js": ["js/content.js"],
+		"run_at": "document_end"
+	}],
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
