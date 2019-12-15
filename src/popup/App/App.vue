@@ -1,15 +1,12 @@
 <template>
   <div class="main_app">
     <h1>Hello popasdasdup</h1>
-    <MyClock></MyClock>
   </div>
 </template>
 
 <script>
-import MyClock from '../../components/myclock/myClock'
 export default {
   name: 'app',
-  components: { MyClock }
 }
 </script>
 

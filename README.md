@@ -11,7 +11,6 @@ yarn crx
 ```
 ### lib
 ```js
-https://github.com/tansuo1989/dd-box
 https://github.com/JChehe/simple_browser_gesture
 ```
 
