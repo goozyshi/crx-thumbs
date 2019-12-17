@@ -1,6 +1,6 @@
+const webpack = require("webpack")
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
-
 // Generate pages object
 const pagesObj = {};
 
@@ -38,7 +38,13 @@ module.exports = {
     output: {
       filename: 'js/[name].js'
     },
-    plugins: [CopyWebpackPlugin(plugins)]
+    plugins: [
+      CopyWebpackPlugin(plugins),
+      new webpack.ProvidePlugin({
+        jQuery: "jquery",
+        $: "jquery"
+      })
+    ]
   },
   // 查看打包组件大小情况
   chainWebpack: config => {

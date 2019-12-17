@@ -1,14 +1,22 @@
 import BrowserGesture from './gesture'
+import $ from 'jquery'
+function set_gesture(){
+  var bg = new BrowserGesture()
+  bg._ACTION = action
+}
+set_gesture()
+
+/* 指令执行 -start */
 const action = {
   chrome_totop: () => {
     $("body,html").animate({
       scrollTop: 0
-    }, 100)
+    }, 400)
   },
   chrome_tobottom: () => {
     $("body,html").animate({
       scrollTop: $("body").height(),
-    }, 100)
+    }, 400)
   },
   chrome_toback: () => {
     history.back()
@@ -21,8 +29,5 @@ const action = {
     })
   }
 }
-function set_gesture(){
-  var bg = new BrowserGesture()
-  bg._ACTION = action
-}
-set_gesture()
+/* 指令执行 -start */
+
