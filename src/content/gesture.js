@@ -138,8 +138,8 @@ BrowserGesture.prototype = {
       case 'L':
         this._ACTION.chrome_toback()
         break;
-      case 'DR':
-        this._ACTION.chrome_close()
+      case 'R':
+        this._ACTION.chrome_forward()
         break;
       case 'U':
         this._ACTION.chrome_totop()
@@ -147,13 +147,15 @@ BrowserGesture.prototype = {
       case 'D':
         this._ACTION.chrome_tobottom()
         break;
+      case 'DR':
+        this._ACTION.chrome_close()
+        break;
       default: {
         _action = false
         console.log(`未定义的指令执行操作:${this.instructionSet}`)
       }
     }
     if(_action){
-      console.log("右键禁用", e)
       document.body.addEventListener("contextmenu",function(e){
         e.returnValue = false
       })

@@ -1,25 +1,22 @@
 import BrowserGesture from './gesture'
 import $ from 'jquery'
-function set_gesture(){
-  var bg = new BrowserGesture()
-  bg._ACTION = action
-}
-set_gesture()
-
 /* 指令执行 -start */
 const action = {
   chrome_totop: () => {
     $("body,html").animate({
       scrollTop: 0
-    }, 400)
+    }, 500)
   },
   chrome_tobottom: () => {
     $("body,html").animate({
       scrollTop: $("body").height(),
-    }, 400)
+    }, 500)
   },
   chrome_toback: () => {
     history.back()
+  },
+  chrome_forward: () => {
+    history.forward()
   },
   chrome_close: () => {
     // window.location.href="about:blank"; //有一定概率打开这个空白页面后并没有关闭
@@ -29,5 +26,10 @@ const action = {
     })
   }
 }
-/* 指令执行 -start */
+/* 指令执行 - end */
+function set_gesture(){
+  var bg = new BrowserGesture()
+  bg._ACTION = action
+}
+set_gesture()
 
