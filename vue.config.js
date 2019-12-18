@@ -32,7 +32,6 @@ module.exports = {
   pages: pagesObj,
   configureWebpack: {
     entry: {
-      'gesture': './src/content/gesture.js',
       'content': './src/content/content.js'
     },
     output: {
