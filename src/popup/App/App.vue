@@ -1,23 +1,118 @@
 <template>
-  <div class="main_app">
-    <h1>Hello popasdasdup</h1>
+  <div>
+    <div v-if="isError">暂无数据</div>
+    <div v-else class="text-box">
+      <div class="title">{{poem}}</div>
+      <div>
+        <span class="bage bage--plain">{{region}}</span>
+        <span class="bage bage--plain">{{weatherData.temperature}}°C</span>
+        <span v-for="tag in this.tags" :key="tag" class="bage bage--primary">
+          {{tag}}
+        </span>
+      </div>
+      <div>
+        <button class="btn" @click="getShiCi">换一句</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: 'app',
+  name: 'popup',
+  data () {
+    return {
+      region: '',
+      weatherData: [],
+      poem: '',
+      tags: []
+    }
+  },
+  mounted () {
+    this.getIpInfo()
+  },
+  methods: {
+    getIpInfo () {
+      axios.get('https://v2.jinrishici.com/info').then(res => {
+        res = res.data.data
+        if (res) {
+          this.region = res.region.replace(/\|/, ' | ') || ''
+          this.weatherData = res.weatherData || []
+          this.getShiCi()
+        } else {
+          this.isError = true
+        }
+      })
+    },
+    getShiCi () {
+      axios.get('https://v2.jinrishici.com/one.json').then(res => {
+        res = res.data.data
+        console.log(res)
+        this.poem = res.content.replace(/。/, '')
+        this.tags = res.matchTags
+      })
+    }
+  }
 }
 </script>
-
 <style>
-.main_app {
-  width: 500px;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+.text-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  width: 400px;
+  padding: 20px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
+}
+.text-box .title {
+  vertical-align: middle;
+  line-height: normal;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
+}
+.bage {
+  display: inline-block;
+  
+  margin: 10px 5px;
+  padding: 5px 10px;
+
+  font-size: 75%;
+  line-height: 1;
+
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+
+  border-radius: 10rem;
+}
+.bage--plain {
+  color: #666
+}
+.bage--primary {
+  font-weight: 700;
+  color: #1aaf5d;
+  background-color: #fff;
+  border: 1px solid #1aaf5d;
+}
+.btn {
+  outline: none;
+  border: #ddd 1px solid;
+  padding: 5px 15px;
+  border-radius: 10rem;
+}
+.btn:hover {
+  border: #1aaf5d 1px solid;
+  background-color: #1aaf5d;
+  color: #fff;
+  font-weight: 600;
 }
 </style>

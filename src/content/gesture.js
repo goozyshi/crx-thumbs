@@ -13,7 +13,12 @@ export default function BrowserGesture ()  {
   this.isMouseDown = false
   this._init()
 }
-
+var ARROW_ICON = {
+  U: chrome.extension.getURL('up.png'),
+  R: chrome.extension.getURL('right.png'),
+  D: chrome.extension.getURL('down.png'),
+  L: chrome.extension.getURL('left.png')
+}
 BrowserGesture.prototype = {
   // 获取点击位置
   _windowToCanvas: (canvas, clientX, clientY) =>  {
@@ -110,6 +115,10 @@ BrowserGesture.prototype = {
       lastDirection = this.instructionSet[this.instructionSet.length -1]
       if (lastDirection !== direction) {
         this.instructionSet.push(direction)
+        var img = document.createElement('img');
+        img.src = ARROW_ICON[direction];
+        img.style = "background: '#072'"
+        this.tempCanvas.appendChild(img);
       }
       this.lastX = curX
       this.lastY = curY

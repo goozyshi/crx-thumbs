@@ -10,6 +10,7 @@
     "build-watch": "vue-cli-service build-watch"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "core-js": "^3.4.3",
     "jquery": "^3.4.1",
     "vue": "^2.6.10"
