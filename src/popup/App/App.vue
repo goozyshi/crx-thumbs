@@ -12,6 +12,7 @@
       </div>
       <div>
         <button class="btn" @click="getShiCi">换一句</button>
+        <button class="btn" @click="goToOption"">选 项</button>
       </div>
     </div>
   </div>
@@ -23,6 +24,7 @@ export default {
   name: 'popup',
   data () {
     return {
+      isError: false,
       region: '',
       weatherData: [],
       poem: '',
@@ -52,6 +54,9 @@ export default {
         this.poem = res.content.replace(/。/, '')
         this.tags = res.matchTags
       })
+    },
+    goToOption () {
+      chrome.tabs.create({url: 'chrome-extension://gjlaanimncgijljdjiplobfeojalaaak/options.html'});
     }
   }
 }
@@ -107,6 +112,7 @@ export default {
   outline: none;
   border: #ddd 1px solid;
   padding: 5px 15px;
+  margin: 0px 5px;
   border-radius: 10rem;
 }
 .btn:hover {
