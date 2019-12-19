@@ -1,6 +1,7 @@
 <template>
   <div class="main_app">
     <h1>Hello Options</h1>
+    <el-button>dasd</el-button>
   </div>
 </template>
 

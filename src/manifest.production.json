@@ -1,10 +1,28 @@
 {
-    "manifest_version": 2,
-    "name": "thumbs",
-    "description": "gesture && translate && time-tracker",
-    "version": "0.0.1",
-    "options_page": "options.html",
-    "browser_action": {
-        "default_popup": "popup.html"
-    }
+	"manifest_version": 2,
+	"name": "thumbs",
+	"description": "gesture && today-poetry",
+	"icons": {
+		"19": "./assets/icon/icon_19.png",
+		"38": "./assets/icon/icon_38.png",
+		"76": "./assets/icon/icon_76.png"
+	},
+	"version": "0.0.1",
+	"options_page": "options.html",
+	"browser_action": {
+		"default_title": "捣鼓着玩的手势插件",
+		"default_icon": {
+			"19": "./assets/icon/icon_19.png",
+			"38": "./assets/icon/icon_38.png",
+			"76": "./assets/icon/icon_76.png"
+		},
+		"default_popup": "popup.html"
+	},
+	"content_scripts": [{
+		"matches": ["https://*/*","http://*/*"],
+		"js": ["js/content.js"],
+		"run_at": "document_end"
+	}],
+	"web_accessible_resources": [ "up.png", "down.png", "left.png", "right.png" ],
+	"permissions": ["storage", "notifications"]
 }

@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "thumbs",
-	"description": "gesture && translate && time-tracker",
+	"description": "gesture && today-poetry",
 	"icons": {
 		"19": "./assets/icon/icon_19.png",
 		"38": "./assets/icon/icon_38.png",
@@ -24,5 +24,6 @@
 		"run_at": "document_end"
 	}],
 	"web_accessible_resources": [ "up.png", "down.png", "left.png", "right.png" ],
+	"permissions": ["storage", "notifications"],
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

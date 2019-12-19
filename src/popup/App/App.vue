@@ -12,7 +12,8 @@
       </div>
       <div>
         <button class="btn" @click="getShiCi">换一句</button>
-        <button class="btn" @click="goToOption"">选 项</button>
+        <button class="btn" @click="sendInfo">发通知</button>
+        <button class="btn" @click="goToOption">选 项</button>
       </div>
     </div>
   </div>
@@ -50,13 +51,22 @@ export default {
     getShiCi () {
       axios.get('https://v2.jinrishici.com/one.json').then(res => {
         res = res.data.data
-        console.log(res)
         this.poem = res.content.replace(/。/, '')
         this.tags = res.matchTags
       })
     },
     goToOption () {
       chrome.tabs.create({url: 'chrome-extension://gjlaanimncgijljdjiplobfeojalaaak/options.html'});
+    },
+    sendInfo () {
+      console.log(chrome)
+      chrome.notifications.create(null, {
+        type: 'image',
+        iconUrl: 'up.png',
+        title: '今日诗词',
+        message: '',
+        imageUrl: 'https://v2.jinrishici.com/one.svg'
+      })
     }
   }
 }
