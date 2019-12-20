@@ -1,14 +1,12 @@
 <template>
   <div>
-    <div v-if="isError">暂无数据</div>
+    <div v-if="isLoading" class="text-box"><span class="title">正在加载……</span></div>
     <div v-else class="text-box">
       <div class="title">{{poem}}</div>
       <div>
         <span class="bage bage--plain">{{region}}</span>
-        <span class="bage bage--plain">{{weatherData.temperature}}°C</span>
-        <span v-for="tag in this.tags" :key="tag" class="bage bage--primary">
-          {{tag}}
-        </span>
+        <span class="bage bage--plain" v-if="temperature">{{`${temperature}°C`}}</span>
+        <span v-for="tag in this.tags" :key="tag" class="bage bage--primary">{{tag}}</span>
       </div>
       <div>
         <button class="btn" @click="getShiCi">换一句</button>
@@ -25,9 +23,10 @@ export default {
   name: 'popup',
   data () {
     return {
+      isLoading: true,
       isError: false,
       region: '',
-      weatherData: [],
+      temperature: '',
       poem: '',
       tags: []
     }
@@ -41,7 +40,7 @@ export default {
         res = res.data.data
         if (res) {
           this.region = res.region.replace(/\|/, ' | ') || ''
-          this.weatherData = res.weatherData || []
+          this.temperature = res.weatherData.temperature || ''
           this.getShiCi()
         } else {
           this.isError = true
@@ -53,6 +52,9 @@ export default {
         res = res.data.data
         this.poem = res.content.replace(/。/, '')
         this.tags = res.matchTags
+        this.isLoading = false
+      }).catch(() => {
+        this.isLoading = false
       })
     },
     goToOption () {

@@ -1,3 +1,6 @@
+<template>
+  <div id="content"></div>
+</template>
 <script>
 import BrowserGesture from './gesture'
 import $ from 'jquery'

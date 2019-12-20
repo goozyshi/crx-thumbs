@@ -2,7 +2,7 @@ import Vue from "vue";
 import content from './content.vue'
 
 new Vue({
-  el: "#app",
+  el: "#content",
   render: createElement => {
     return createElement(content);
   }
