@@ -62,7 +62,7 @@ export default {
 .opt-box__header .title {
   margin-left: 2rem;
   font-size: 36px;
-  color: #0f4c81;
+  color: #409eff;
   font-weight: 700;
 }
 </style>

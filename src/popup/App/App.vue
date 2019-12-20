@@ -92,6 +92,7 @@ export default {
 .text-box .title {
   vertical-align: middle;
   line-height: normal;
+  margin: 5px;
   display: inline-block;
   font-size: 20px;
   font-weight: 700;
@@ -116,9 +117,9 @@ export default {
 }
 .bage--primary {
   font-weight: 700;
-  color: #1aaf5d;
+  color: #409eff;
   background-color: #fff;
-  border: 1px solid #1aaf5d;
+  border: 1px solid #409eff;
 }
 .btn {
   outline: none;
@@ -128,8 +129,8 @@ export default {
   border-radius: 10rem;
 }
 .btn:hover {
-  border: #1aaf5d 1px solid;
-  background-color: #1aaf5d;
+  border: #409eff 1px solid;
+  background-color: #409eff;
   color: #fff;
   font-weight: 600;
 }
