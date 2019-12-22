@@ -1,11 +1,10 @@
 import Vue from "vue";
 import AppComponent from "./App/App.vue";
-import { Button, Select, Input, Card, Dialog, Option, OptionGroup, Message } from 'element-ui';
+import { Button, Select, Card, Dialog, Option, OptionGroup, Message } from 'element-ui';
 Vue.use(Button)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(OptionGroup)
-Vue.use(Input)
 Vue.use(Card)
 Vue.use(Dialog)
 Vue.prototype.$message = Message

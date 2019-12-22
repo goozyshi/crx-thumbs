@@ -1,7 +1,5 @@
 <template>
   <div class="opt-box">
-      <span>数据： {{msg}}</span>
-      <el-input v-model="search" @input="saveStorage"/>
     <div>
       <div class="opt-box__header">
         <img src="assets/icon/logo.png" style="width: 100px; height: 100px" alt="手势logo" />
@@ -12,7 +10,7 @@
       <el-card class="gesture-list__content">
         <div slot="header">添加手势</div>
         <div>
-          <el-button @click="isShowCanvas = true">＋</el-button>
+          <el-button @click="bindMouseEvent">＋</el-button>
         </div>
       </el-card>
       <el-card class="gesture-list__content" v-for="g in gestureSets" :key="g.getsture">
@@ -36,14 +34,14 @@
       <div>
         <div>
           <span style="line-height: 50px">手势:</span>
-          <span v-if="!this.instructionSet.length" style="color: #999">按住鼠标右键拖动生成手势</span>
+          <span v-if="!this.instructionSet.length" style="color: #ddd">按住鼠标右键拖动生成手势</span>
           <div class="img-wraper" v-for="(direction, index) in instructionSet" :key="index">
             <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
           </div>
         </div>
         <div style="margin-top: 10px;">
           <span style="margin-right: 10px">指令:</span>
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="actLabel" placeholder="请选择" @change="chooseInstruction">
             <el-option-group
               v-for="group in options"
               :key="group.label"
@@ -52,7 +50,8 @@
                 v-for="item in group.options"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value">
+                :value="item"
+              >
               </el-option>
             </el-option-group>
           </el-select>
@@ -69,71 +68,64 @@
 </template>
 
 <script>
-import { gestureActionSets } from './mixins'
+import { userActionSets } from './mixins'
 export default {
   name: 'app',
-  mixins: [gestureActionSets],
+  mixins: [userActionSets],
   data () {
     return {
-      msg: '',
-      search: '',
       isShowCanvas: false,
       options: [{
-        label: '热门城市',
+        label: '滚动',
         options: [{
-          value: 'Shanghai',
-          label: '上海'
+          value: 'G_totop',
+          label: '顶部'
         }, {
-          value: 'Beijing',
-          label: '北京'
+          value: 'G_tobottom',
+          label: '底部'
         }]
       }, {
-        label: '城市名',
+        label: '前后退',
         options: [{
-          value: 'Chengdu',
-          label: '成都'
+          value: 'G_back',
+          label: '后退'
         }, {
-          value: 'Shenzhen',
-          label: '深圳'
-        }, {
-          value: 'Guangzhou',
-          label: '广州'
-        }, {
-          value: 'Dalian',
-          label: '大连'
+          value: 'G_forward',
+          label: '前进'
         }]
       }],
-      value: '',
       gestureSets: [
         {
           gesture: 'U',
           action: {
-            name: 'scrollToTop',
-            act: 'scrollToTop'
+            name: '顶部',
+            act: 'G_totop'
           }
         },
         {
-          gesture: 'DRULRDR',
+          gesture: 'D',
           action: {
-            name: 'scrollToBottom',
-            act: 'scrollToBottom'
+            name: '底部',
+            act: 'G_tobottom'
           }
         },
         {
           gesture: 'L',
           action: {
-            name: 'Previous',
-            act: 'Previous'
+            name: '后退',
+            act: 'G_back'
           }
         },
         {
           gesture: 'R',
           action: {
-            name: 'Next',
-            act: 'Next'
+            name: '前进',
+            act: 'G_forward'
           }
         }
-      ],
+      ],      
+      actLabel: '',
+      actValue: '',
       tempCanvas: null,
       instructionSet: [],
       lineWidth: 5,
@@ -147,19 +139,17 @@ export default {
     }
   },
   mounted () {
-    this.refreshData()
-  },
-  watch: {
-    isShowCanvas (val) {
-      if (val) {
-        this.bindMouseEvent()
-      }
-    }
+    this.getStorage()
   },
   methods: {
+    chooseInstruction (item) {
+      this.actLabel = item.label
+      this.actValue = item.value
+    },
     onResetGesture () {
       this.instructionSet = []
-      this.value = ''
+      this.actLabel = ''
+      this.actValue = ''
     },
     onAddGesture (type = 'confirm') {
       if (type === 'cancel') {
@@ -175,27 +165,32 @@ export default {
         this.$message({type: 'warning', message: '手势动作请保持在10个以内'})
         this.onResetGesture()
         return
-      }      
-      if (!this.value) {
+      }
+      if (!this.actLabel) {
         this.$message({type: 'warning', message: '请选择操作指令'})
       }
       const newGesture = {
         gesture: this.instructionSet.join(''),
         action: {
-          name: this.value,
-          act: this.value
+          name: this.actLabel,
+          act: this.actValue
         }
       }
       this.gestureSets.unshift(newGesture)
+      this.saveStorage()
       this.$message({type: 'success', message: '操作成功'})
       this.isShowCanvas = false
     },
     bindMouseEvent () {
+      this.isShowCanvas = true
       document.body.addEventListener('mousedown', (e) => {
         this.handleMouseDown(e)
       }, false)
       document.body.addEventListener('mouseup', (e) => {
         this.handleMouseUp(e)
+      }, false)
+      document.body.addEventListener('mousemove', (e) => {
+        this.handleMouseMove(e)
       }, false)
     },
     // 事件监听
@@ -203,10 +198,7 @@ export default {
       let tempCanvas, ctx
       // 右键处理
       const isRightClick = (e.which === 3)
-      if (isRightClick) {
-        document.body.addEventListener('mousemove', (e) => {
-          this.handleMouseMove(e)
-        }, false)        
+      if (isRightClick && this.isShowCanvas) {       
         if (this.tempCanvas) {
           try {
             document.body.removeChild(this.tempCanvas)
@@ -282,7 +274,7 @@ export default {
         try {
           document.body.removeChild(this.tempCanvas)
           this.tempCanvas = null
-          document.body.addEventListener("contextmenu",function(e){
+          document.body.addEventListener('contextmenu',function(e){
             e.returnValue = false
           })
         } catch (e) {
@@ -298,14 +290,18 @@ export default {
       }
       return position
     },
-    refreshData () {
-      let _msg = chrome.storage.local.get(['key1'], (res) => {
-        this.msg = res['key1']
+    getStorage () {
+      chrome.storage.local.get(['userGestureList'], (res) => {
+        const raw = res.userGestureList || '[]'
+        this.gestureSets = JSON.parse(raw)
+        console.log(this.gestureSets)
       })
     },
     saveStorage () {
-      chrome.storage.local.set({'key1': this.search}, () => {
-        this.refreshData()
+      console.log(`asdad`)
+      const userGestureList = this.gestureSets.length === 0 ? [] : this.gestureSets
+      chrome.storage.local.set({'userGestureList': JSON.stringify(userGestureList)}, () => {
+        this.getStorage ()
       })
     }
   }

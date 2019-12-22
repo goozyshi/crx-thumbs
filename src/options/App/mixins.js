@@ -1,4 +1,4 @@
-export const gestureActionSets = {
+export const userActionSets = {
   data () {
     return {
       actionIcon: {
@@ -6,15 +6,7 @@ export const gestureActionSets = {
         D: 'assets/down.png',
         L: 'assets/left.png',
         R: 'assets/right.png'
-      },
-      gestureActionSets: [
-        {
-          
-        }
-      ]
+      }
     }
-  },
-  methods: {
-
   }
 }

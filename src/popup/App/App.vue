@@ -61,7 +61,6 @@ export default {
       chrome.tabs.create({url: 'chrome-extension://gjlaanimncgijljdjiplobfeojalaaak/options.html'});
     },
     sendInfo () {
-      console.log(chrome)
       chrome.notifications.create(null, {
         type: 'image',
         iconUrl: 'up.png',
