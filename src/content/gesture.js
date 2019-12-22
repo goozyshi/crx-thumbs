@@ -1,6 +1,3 @@
-// 基于 https://github.com/JChehe/simple_browser_gesture
-// 根据需要，作部分修改
-
 export default function BrowserGesture ()  {
   // canvas设置
   this.tempCanvas = null
@@ -12,12 +9,6 @@ export default function BrowserGesture ()  {
   this.instructionSet = []
   this.isMouseDown = false
   this._init()
-}
-var ARROW_ICON = {
-  U: chrome.extension.getURL('up.png'),
-  R: chrome.extension.getURL('right.png'),
-  D: chrome.extension.getURL('down.png'),
-  L: chrome.extension.getURL('left.png')
 }
 BrowserGesture.prototype = {
   // 获取点击位置
@@ -115,10 +106,6 @@ BrowserGesture.prototype = {
       lastDirection = this.instructionSet[this.instructionSet.length -1]
       if (lastDirection !== direction) {
         this.instructionSet.push(direction)
-        var img = document.createElement('img');
-        img.src = ARROW_ICON[direction];
-        img.style = "background: '#072'"
-        this.tempCanvas.appendChild(img);
       }
       this.lastX = curX
       this.lastY = curY
@@ -143,27 +130,32 @@ BrowserGesture.prototype = {
     const gesture  = this.instructionSet.join("")
     console.log(gesture)
     let _action = true
-    switch (gesture) {
-      case 'L':
-        this._ACTION.chrome_toback()
-        break;
-      case 'R':
-        this._ACTION.chrome_forward()
-        break;
-      case 'U':
-        this._ACTION.chrome_totop()
-        break;
-      case 'D':
-        this._ACTION.chrome_tobottom()
-        break;
-      case 'DR':
-        this._ACTION.chrome_close()
-        break;
-      default: {
-        _action = false
-        console.log(`未定义的指令执行操作:${this.instructionSet}`)
-      }
+    if (gesture) {
+      const actName = this._ACTION[gesture]['act']
+      console.log(actName)
+      this[actName]()
     }
+    // switch (gesture) {
+    //   case 'L':
+    //     this._ACTION.chrome_toback()
+    //     break;
+    //   case 'R':
+    //     this._ACTION.chrome_forward()
+    //     break;
+    //   case 'U':
+    //     this._ACTION.chrome_totop()
+    //     break;
+    //   case 'D':
+    //     this._ACTION.chrome_tobottom()
+    //     break;
+    //   case 'DR':
+    //     this._ACTION.chrome_close()
+    //     break;
+    //   default: {
+    //     _action = false
+    //     console.log(`未定义的指令执行操作:${this.instructionSet}`)
+    //   }
+    // }
     if(_action){
       document.body.addEventListener("contextmenu",function(e){
         e.returnValue = false

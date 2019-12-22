@@ -1,6 +1,12 @@
 export const actionMixin = {
   data () {
     return {
+      gestureActionSets: {
+        'L': {
+          name: '',
+          act: 'chrome_totop'
+        }
+      },
       action: {
         chrome_totop: () => {
           $("body,html").animate({

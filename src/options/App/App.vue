@@ -10,21 +10,61 @@
     </div>
     <div class="gesture-list">
       <el-card class="gesture-list__content">
-        <el-button @click="isShowCanvas = true">{{msg || '添加'}}</el-button>
+        <div slot="header">添加手势</div>
+        <div>
+          <el-button @click="isShowCanvas = true">＋</el-button>
+        </div>
       </el-card>
       <el-card class="gesture-list__content" v-for="g in gestureSets" :key="g.getsture">
-        <div slot="header" class="clearfix">
+        <div slot="header">
           <span>{{g.action.name}}</span>
           <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
           <el-button style="float: right; padding: 3px 0" type="text">删除</el-button>
         </div>
         <div>
-          <div class="img-wraper" v-for="direction in g.gesture.split('')" :key="direction">
+          <div class="img-wraper" v-for="(direction, index) in g.gesture.split('')" :key="index">
             <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
           </div>
         </div>
       </el-card>
     </div>
+    <el-dialog
+      title="添加手势"
+      :visible.sync="isShowCanvas"
+      width="30%"
+    >
+      <div>
+        <div>
+          <span style="line-height: 50px">手势:</span>
+          <span v-if="!this.instructionSet.length" style="color: #999">按住鼠标右键拖动生成手势</span>
+          <div class="img-wraper" v-for="(direction, index) in instructionSet" :key="index">
+            <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <span style="margin-right: 10px">指令:</span>
+          <el-select v-model="value" placeholder="请选择">
+            <el-option-group
+              v-for="group in options"
+              :key="group.label"
+              :label="group.label">
+              <el-option
+                v-for="item in group.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-option-group>
+          </el-select>
+        </div>
+        
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="onAddGesture('cancel')">取 消</el-button>
+        <el-button type="primary" @click="onResetGesture">重 置</el-button>
+        <el-button type="primary" @click="onAddGesture">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -35,11 +75,35 @@ export default {
   mixins: [gestureActionSets],
   data () {
     return {
-      ouseDownEvent: null,
       msg: '',
       search: '',
       isShowCanvas: false,
-
+      options: [{
+        label: '热门城市',
+        options: [{
+          value: 'Shanghai',
+          label: '上海'
+        }, {
+          value: 'Beijing',
+          label: '北京'
+        }]
+      }, {
+        label: '城市名',
+        options: [{
+          value: 'Chengdu',
+          label: '成都'
+        }, {
+          value: 'Shenzhen',
+          label: '深圳'
+        }, {
+          value: 'Guangzhou',
+          label: '广州'
+        }, {
+          value: 'Dalian',
+          label: '大连'
+        }]
+      }],
+      value: '',
       gestureSets: [
         {
           gesture: 'U',
@@ -49,7 +113,7 @@ export default {
           }
         },
         {
-          gesture: 'DRULDFRDRDR',
+          gesture: 'DRULRDR',
           action: {
             name: 'scrollToBottom',
             act: 'scrollToBottom'
@@ -79,7 +143,7 @@ export default {
       isMouseDown: false,
       ctx: null,
       lastX: null,
-      lastY: null    
+      lastY: null
     }
   },
   mounted () {
@@ -89,17 +153,46 @@ export default {
     isShowCanvas (val) {
       if (val) {
         this.bindMouseEvent()
-        this.handleMouseDown()
       }
     }
   },
   methods: {
+    onResetGesture () {
+      this.instructionSet = []
+      this.value = ''
+    },
+    onAddGesture (type = 'confirm') {
+      if (type === 'cancel') {
+        this.isShowCanvas = false
+        this.onResetGesture()
+        return
+      }
+      if (!this.instructionSet.length) {
+        this.$message({type: 'warning', message: '按住右键生成手势'})
+        return
+      }
+      if (this.instructionSet.length > 10) {
+        this.$message({type: 'warning', message: '手势动作请保持在10个以内'})
+        this.onResetGesture()
+        return
+      }      
+      if (!this.value) {
+        this.$message({type: 'warning', message: '请选择操作指令'})
+      }
+      const newGesture = {
+        gesture: this.instructionSet.join(''),
+        action: {
+          name: this.value,
+          act: this.value
+        }
+      }
+      this.gestureSets.unshift(newGesture)
+      this.$message({type: 'success', message: '操作成功'})
+      this.isShowCanvas = false
+    },
     bindMouseEvent () {
       document.body.addEventListener('mousedown', (e) => {
         this.handleMouseDown(e)
-      }, false)
-      document.body.addEventListener('mousemove', (e) => {
-        this.handleMouseMove(e)
       }, false)
       document.body.addEventListener('mouseup', (e) => {
         this.handleMouseUp(e)
@@ -111,6 +204,9 @@ export default {
       // 右键处理
       const isRightClick = (e.which === 3)
       if (isRightClick) {
+        document.body.addEventListener('mousemove', (e) => {
+          this.handleMouseMove(e)
+        }, false)        
         if (this.tempCanvas) {
           try {
             document.body.removeChild(this.tempCanvas)
@@ -130,7 +226,7 @@ export default {
         ctx = this.ctx = tempCanvas.getContext('2d')
         tempCanvas.width = Math.max(document.documentElement.scrollWidth, window.innerWidth)
         tempCanvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight)
-        tempCanvas.style = 'position: fixed; left: 0; right: 0; top: 0; bottom: 0; background-color: #072; opacity: 0.5'
+        tempCanvas.style = 'position: fixed; left: 0; right: 0; top: 0; bottom: 0; background-color: #409eff; opacity: 0.5'
         document.body.appendChild(tempCanvas)
     
         const canvasMouse = this._windowToCanvas(tempCanvas, e.clientX, e.clientY)
@@ -142,10 +238,8 @@ export default {
       }
     },
     handleMouseMove (e) {
-      console.log(`move`)
-      let tempCanvas, ctx, direction, canvasMouse, curX, curY, dx, dy, lastDirection
-
       if (this.isMouseDown) {
+        let tempCanvas, ctx, direction, canvasMouse, curX, curY, dx, dy, lastDirection
         tempCanvas = this.tempCanvas
         ctx = this.ctx
 
@@ -182,15 +276,15 @@ export default {
       }
     },
     handleMouseUp (e) {
-      console.log(`up`, this.instructionSet)
-      // (this.instructionSet.length !== 0) && this._performAction(e)
       this.isMouseDown = false
-      this.instructionSet = []
       
       if (this.tempCanvas) {
         try {
           document.body.removeChild(this.tempCanvas)
           this.tempCanvas = null
+          document.body.addEventListener("contextmenu",function(e){
+            e.returnValue = false
+          })
         } catch (e) {
           console.log(e)
         }
@@ -259,7 +353,7 @@ export default {
 .gesture-list__content span {
   margin-right: 10px;
 }
-.gesture-list__content .img-wraper {
+.img-wraper {
   display: inline-block;
   margin: 0 2px;
 }

@@ -10,7 +10,7 @@ export default {
   methods: {
     set_gesture () {
       var bg = new BrowserGesture()
-      bg._ACTION = this.action
+      bg._ACTION = this.gestureActionSets
     }
   },
   mounted () {
