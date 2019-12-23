@@ -16,7 +16,7 @@
       <el-card class="gesture-list__content" v-for="(g, index) in gestureSets" :key="index">
         <div slot="header">
           <span>{{g.action.name}}</span>
-          <el-button style="float: right; padding: 3px 0; margin-left: 20px" type="text" @click="isEdit = true">编辑</el-button>
+          <el-button style="float: right; padding: 3px 0; margin-left: 20px" type="text" @click="onEdit(g, index)">编辑</el-button>
           <el-button style="float: right; padding: 3px 0" type="text" @click="onDelete(index)">删除</el-button>
         </div>
         <div>
@@ -27,17 +27,19 @@
       </el-card>
     </div>
     <el-dialog
-      title="添加手势"
+      :title="isEdit ? '编辑手势' : '添加手势'"
       :visible.sync="isShowCanvas"
       width="30%"
+      :show-close="false"
+      :close-on-click-modal="false"
     >
       <div>
         <div>
           <span style="line-height: 50px; margin-right: 20px">手势:</span>
           <span v-if="!this.instructionSet.length" style="color: #999">按住鼠标右键拖动生成手势</span>
-          <div class="img-wraper" v-for="(direction, index) in instructionSet" :key="index">
-            <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
-          </div>
+            <div class="img-wraper" v-for="(direction, index) in instructionSet" :key="index">
+              <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
+            </div>
         </div>
         <div style="margin-top: 10px;">
           <span style="line-height: 50px; margin-right: 20px">指令:</span>
@@ -60,8 +62,10 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onAddGesture('cancel')">取 消</el-button>
-        <el-button @click="onResetGesture">重 置</el-button>
-        <el-button type="primary" @click="onAddGesture">确 定</el-button>
+        <el-button v-if="!isEdit" @click="onResetGesture">重 置</el-button>
+        <el-tooltip :disabled="!isRepeat" content="已存在的手势，确定后更新" placement="top">
+          <el-button type="primary" @click="onAddGesture">确 定</el-button>
+        </el-tooltip>
       </span>
     </el-dialog>
   </div>
@@ -76,36 +80,9 @@ export default {
     return {
       isShowCanvas: false,
       isEdit: false,
-      gestureSets: [
-        {
-          gesture: 'U',
-          action: {
-            name: '顶部',
-            act: 'G_totop'
-          }
-        },
-        {
-          gesture: 'D',
-          action: {
-            name: '底部',
-            act: 'G_tobottom'
-          }
-        },
-        {
-          gesture: 'L',
-          action: {
-            name: '后退',
-            act: 'G_back'
-          }
-        },
-        {
-          gesture: 'R',
-          action: {
-            name: '前进',
-            act: 'G_forward'
-          }
-        }
-      ],  
+      gestureSets: [],
+      isRepeat: false,
+      _index: '',
       actLabel: '',
       actValue: ''
     }
@@ -113,12 +90,32 @@ export default {
   mounted () {
     this.getStorage()
   },
+  watch: {
+    instructionSet (val) {
+      let index = this.gestureSets.findIndex(g => g.gesture === val.join(''))
+      let isRepeat = (index !== -1)
+      this.isRepeat =  isRepeat
+      this.actLabel = isRepeat ? this.gestureSets[index].action.name : ''
+      this.actValue = isRepeat ? this.gestureSets[index].action.act : ''
+      isRepeat && (this._index = index)
+    } 
+  },
   methods: {
+    onEdit (item, index) {
+      this.instructionSet = item.gesture.split('')
+      this.isShowCanvas = true
+      this.isEdit = true
+    },
     onDelete (index) {
-      console.log(index)
-      this.gestureSets.splice(index, 1)
-      this.saveStorage()
-      this.$message({type: 'success', message: '操作成功'})
+      this.$confirm('确定要删除吗', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.gestureSets.splice(index, 1)
+        this.saveStorage()
+        this.$message({type: 'success', message: '操作成功'})
+      }).catch(() => {})
     },
     chooseInstruction (item) {
       this.actLabel = item.label
@@ -128,6 +125,7 @@ export default {
       this.instructionSet = []
       this.actLabel = ''
       this.actValue = ''
+      this.isEdit = false
     },
     onAddGesture (type = 'confirm') {
       if (type === 'cancel') {
@@ -146,6 +144,10 @@ export default {
       }
       if (!this.actLabel) {
         this.$message({type: 'warning', message: '请选择操作指令'})
+        return
+      }
+      if (this.isRepeat && this._index !== '') {
+        this.gestureSets.splice(this._index, 1)
       }
       const newGesture = {
         gesture: this.instructionSet.join(''),
@@ -175,7 +177,7 @@ export default {
     getStorage () {
       chrome.storage.local.get(['userGestureList'], (res) => {
         const raw = res.userGestureList || '[]'
-        this.gestureSets = JSON.parse(raw)
+        raw !=='[]' && (this.gestureSets = JSON.parse(raw))
         console.log(this.gestureSets)
       })
     },
@@ -221,7 +223,7 @@ export default {
 .gesture-list__content {
   display: inline-block;
   border: 1px solid #ddd;
-  min-width: 250px;
+  min-width: 300px;
   max-width: 400px;
   height: 120px;
   margin: 20px;

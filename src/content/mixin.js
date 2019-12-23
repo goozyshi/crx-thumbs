@@ -75,6 +75,7 @@ export const canvasMixin = {
         L: 'assets/left.png',
         R: 'assets/right.png'
       },
+      isEdit: false,
       tempCanvas: null,
       instructionSet: [],
       lineWidth: 5,
@@ -133,7 +134,7 @@ export const canvasMixin = {
       }
     },
     handleMouseMove (e) {
-      if (this.isMouseDown) {
+      if (this.isMouseDown && !this.isEdit) {
         let tempCanvas, ctx, direction, canvasMouse, curX, curY, dx, dy, lastDirection
         tempCanvas = this.tempCanvas
         ctx = this.ctx
@@ -197,10 +198,10 @@ export const gestureMixin = {
         label: '滚动',
         options: [{
           value: 'G_totop',
-          label: '顶部'
+          label: '回到顶部'
         }, {
           value: 'G_tobottom',
-          label: '底部'
+          label: '直达底部'
         }]
       }, {
         label: '导航',

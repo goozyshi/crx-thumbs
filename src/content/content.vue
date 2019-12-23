@@ -7,8 +7,16 @@ export default {
   mixins: [actionMixin, canvasMixin],
   data () {
     return {
-      userGestureList: [],
+      gestureSets: []
     }
+  },
+  watch: {
+    instructionSet (val) {
+      let index = this.gestureSets.findIndex(g => g.gesture === val.join(''))
+      if (index !== -1) {
+        console.log(this.gestureSets[index].action.name)
+      }
+    } 
   },
   mounted () {
     this.getStorage()
@@ -26,14 +34,14 @@ export default {
     getStorage () {
       chrome.storage.local.get(['userGestureList'], (res) => {
         const raw = res.userGestureList || '[]'
-        this.userGestureList = JSON.parse(raw)
+        this.gestureSets = JSON.parse(raw)
       })
     },
     // 指令事件绑定
     _performAction (e) {
       const gesture  = this.instructionSet.join("")
       let _action = false
-      const actionItem = { ...this.userGestureList.find(g => g.gesture === gesture) }
+      const actionItem = { ...this.gestureSets.find(g => g.gesture === gesture) }
       if (JSON.stringify(actionItem) !== '{}') {
         _action = true
         const act = actionItem.action.act
@@ -52,3 +60,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .center-box {
+    color: aqua
+  }
+</style>
