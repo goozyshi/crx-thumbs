@@ -50,6 +50,9 @@ export const actionMixin = {
     // 标签页导航
     G_baiduTab () {
       console.log(`G_baiduTab`)
+      chrome.runtime.sendMessage({greeting: "hello"}, (res) => {
+        console.log(res.farewell);
+      })
     },
     G_leftTab () {
       console.log(`G_leftTab`)
