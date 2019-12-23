@@ -63,7 +63,7 @@ export default {
     sendInfo () {
       chrome.notifications.create(null, {
         type: 'image',
-        iconUrl: 'up.png',
+        iconUrl: chrome.extension.getURL('assets/up.png'),
         title: '今日诗词',
         message: '',
         imageUrl: 'https://v2.jinrishici.com/one.svg'

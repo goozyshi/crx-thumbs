@@ -4,25 +4,68 @@ export const actionMixin = {
     }
   },
   methods: {
+    // 滚动
     G_totop () {
-      $("body,html").animate({
-        scrollTop: 0
-      }, 500)
-      // document.documentElement.scrollTop = document.body.scrollTop
+      if (document.body.scrollTop != 0 || document.documentElement.scrollTop != 0) {
+        window.scrollTo({top: 0, behavior: 'smooth'})
+      }
     },
     G_tobottom () {
-      $("body,html").animate({
-        scrollTop: $(document).height(),
-      }, 500)
+      window.scrollTo({top: document.body.offsetHeight, behavior: 'smooth'})
     },
+    // 导航
     G_back () {
       history.back()
     },
     G_forward () {
       history.forward()
+    },
+    G_goparent () {
+      if (location.hash) {
+        location.href = location.pathname + (location.search ? '?' + location.search : '');
+      } else {
+        var paths = location.pathname.split('/');
+        var path = paths.pop();
+        if (!location.search && path === '') paths.pop();
+        location.href = paths.join('/') + '/';
+      }
+    },
+    G_homePage () {
+      location.href = location.origin
+    },
+    G_stop () {
+      window.stop()
+    },
+    // 加载
+    G_reload () {
+      console.log(`G_reload`)
+      window.load()
+    },
+    G_reloadClear () {
+      console.log(`G_reloadClear`)
+    },
+    G_reloadAll () {
+      console.log(`G_reloadAll`)
+    },
+    // 标签页导航
+    G_baiduTab () {
+      console.log(`G_baiduTab`)
+    },
+    G_leftTab () {
+      console.log(`G_leftTab`)
+    },
+    G_rightTab () {
+      console.log(`G_rightTab`)
+    },
+    G_firstTab () {
+      console.log(`G_firstTab`)
+    },
+    G_lastTab () {
+      console.log(`G_lastTab`)
     }
   }
 }
+
 export const canvasMixin = {
   data () {
     return {
@@ -143,6 +186,71 @@ export const canvasMixin = {
           console.log(e)
         }
       }
+    }
+  }
+}
+
+export const gestureMixin = {
+  data () {
+    return {
+      gestureOptions: [{
+        label: '滚动',
+        options: [{
+          value: 'G_totop',
+          label: '顶部'
+        }, {
+          value: 'G_tobottom',
+          label: '底部'
+        }]
+      }, {
+        label: '导航',
+        options: [{
+          value: 'G_back',
+          label: '后退'
+        }, {
+          value: 'G_forward',
+          label: '前进'
+        }, {
+          value: 'G_goparent',
+          label: '返回上一级目录'
+        }, {
+          value: 'G_homePage',
+          label: '网站主页'
+        }, {
+          value: 'G_stop',
+          label: '停止加载'
+        }]
+      }, {
+        label: '加载',
+        options: [{
+          value: 'G_reload',
+          label: '刷新'
+        }, {
+          value: 'G_reloadClear',
+          label: '强制刷新(无缓存)'
+        }, {
+          value: 'G_reloadAll',
+          label: '刷新所有标签页'
+        }]
+      }, {
+        label: '标签页导航',
+        options: [{
+          value: 'G_baiduTab',
+          label: '新增百度标签页'
+        }, {
+          value: 'G_leftTab',
+          label: '左侧标签页'
+        }, {
+          value: 'G_rightTab',
+          label: '右侧标签页'
+        }, {
+          value: 'G_firstTab',
+          label: '首标签页'
+        }, {
+          value: 'G_lastTab',
+          label: '尾标签页'
+        }]
+      }]
     }
   }
 }

@@ -23,6 +23,6 @@
 		"js": ["js/content.js"],
 		"run_at": "document_end"
 	}],
-	"web_accessible_resources": [ "up.png", "down.png", "left.png", "right.png" ],
-	"permissions": ["storage", "notifications"]
+	"web_accessible_resources": [ "assets/up.png", "assets/down.png", "assets/left.png", "assets/right.png" ],
+	"permissions": ["storage", "notifications", "tabs"]
 }

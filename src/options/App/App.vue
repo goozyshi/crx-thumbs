@@ -13,11 +13,11 @@
           <el-button @click="bindMouseEvent">＋</el-button>
         </div>
       </el-card>
-      <el-card class="gesture-list__content" v-for="g in gestureSets" :key="g.getsture">
+      <el-card class="gesture-list__content" v-for="(g, index) in gestureSets" :key="index">
         <div slot="header">
           <span>{{g.action.name}}</span>
-          <el-button style="float: right; padding: 3px 0" type="text">编辑</el-button>
-          <el-button style="float: right; padding: 3px 0" type="text">删除</el-button>
+          <el-button style="float: right; padding: 3px 0; margin-left: 20px" type="text" @click="isEdit = true">编辑</el-button>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="onDelete(index)">删除</el-button>
         </div>
         <div>
           <div class="img-wraper" v-for="(direction, index) in g.gesture.split('')" :key="index">
@@ -33,17 +33,17 @@
     >
       <div>
         <div>
-          <span style="line-height: 50px">手势:</span>
-          <span v-if="!this.instructionSet.length" style="color: #ddd">按住鼠标右键拖动生成手势</span>
+          <span style="line-height: 50px; margin-right: 20px">手势:</span>
+          <span v-if="!this.instructionSet.length" style="color: #999">按住鼠标右键拖动生成手势</span>
           <div class="img-wraper" v-for="(direction, index) in instructionSet" :key="index">
             <img :src="actionIcon[direction]" style="width: 30px; height: 30px"/>
           </div>
         </div>
         <div style="margin-top: 10px;">
-          <span style="margin-right: 10px">指令:</span>
+          <span style="line-height: 50px; margin-right: 20px">指令:</span>
           <el-select v-model="actLabel" placeholder="请选择" @change="chooseInstruction">
             <el-option-group
-              v-for="group in options"
+              v-for="group in gestureOptions"
               :key="group.label"
               :label="group.label">
               <el-option
@@ -60,7 +60,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onAddGesture('cancel')">取 消</el-button>
-        <el-button type="primary" @click="onResetGesture">重 置</el-button>
+        <el-button @click="onResetGesture">重 置</el-button>
         <el-button type="primary" @click="onAddGesture">确 定</el-button>
       </span>
     </el-dialog>
@@ -68,32 +68,14 @@
 </template>
 
 <script>
-import { canvasMixin } from '../../content/mixin'
+import { canvasMixin, gestureMixin } from '../../content/mixin'
 export default {
   name: 'app',
-  mixins: [canvasMixin],
+  mixins: [canvasMixin, gestureMixin],
   data () {
     return {
       isShowCanvas: false,
-      options: [{
-        label: '滚动',
-        options: [{
-          value: 'G_totop',
-          label: '顶部'
-        }, {
-          value: 'G_tobottom',
-          label: '底部'
-        }]
-      }, {
-        label: '前后退',
-        options: [{
-          value: 'G_back',
-          label: '后退'
-        }, {
-          value: 'G_forward',
-          label: '前进'
-        }]
-      }],
+      isEdit: false,
       gestureSets: [
         {
           gesture: 'U',
@@ -132,6 +114,12 @@ export default {
     this.getStorage()
   },
   methods: {
+    onDelete (index) {
+      console.log(index)
+      this.gestureSets.splice(index, 1)
+      this.saveStorage()
+      this.$message({type: 'success', message: '操作成功'})
+    },
     chooseInstruction (item) {
       this.actLabel = item.label
       this.actValue = item.value
@@ -169,8 +157,8 @@ export default {
       this.gestureSets.unshift(newGesture)
       this.onResetGesture()
       this.saveStorage()
-      this.$message({type: 'success', message: '操作成功'})
       this.isShowCanvas = false
+      this.$message({type: 'success', message: '配置成功，刷新页面后使用'})
     },
     bindMouseEvent () {
       this.isShowCanvas = true

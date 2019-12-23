@@ -2,9 +2,7 @@
   <div id="content"></div>
 </template>
 <script>
-import $ from 'jquery'
 import { actionMixin, canvasMixin } from './mixin'
-import { access } from 'fs'
 export default {
   mixins: [actionMixin, canvasMixin],
   data () {
