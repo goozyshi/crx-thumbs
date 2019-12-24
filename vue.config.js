@@ -4,7 +4,7 @@ const path = require("path");
 // Generate pages object
 const pagesObj = {};
 
-const chromeName = ["popup", "options", "background"];
+const chromeName = ["popup", "options", "background", "content"];
 
 chromeName.forEach(name => {
   pagesObj[name] = {
@@ -30,20 +30,9 @@ const plugins =
 module.exports = {
   assetsDir: 'assets',
   pages: pagesObj,
+  filenameHashing: false,
   configureWebpack: {
-    entry: {
-      'content': './src/content/content.js'
-    },
-    output: {
-      filename: 'js/[name].js'
-    },
-    plugins: [
-      CopyWebpackPlugin(plugins),
-      new webpack.ProvidePlugin({
-        jQuery: "jquery",
-        $: "jquery"
-      })
-    ]
+    plugins: [CopyWebpackPlugin(plugins)]
   },
   // 查看打包组件大小情况
   chainWebpack: config => {

@@ -60,8 +60,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .center-box {
-    color: aqua
-  }
-</style>

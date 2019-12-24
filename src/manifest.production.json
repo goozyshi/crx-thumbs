@@ -20,9 +20,12 @@
 	},
 	"content_scripts": [{
 		"matches": ["https://*/*","http://*/*"],
-		"js": ["js/content.js"],
+		"js": ["./assets/js/content.js"],
 		"run_at": "document_end"
 	}],
-	"web_accessible_resources": [ "assets/up.png", "assets/down.png", "assets/left.png", "assets/right.png" ],
+	"background": {
+		"page": "background.html"
+	},
+	"web_accessible_resources": [ "assets/up.png", "assets/down.png", "assets/left.png", "assets/right.png", "/assets/css/*"],
 	"permissions": ["storage", "notifications", "tabs"]
 }
