@@ -19,7 +19,7 @@
 		"default_popup": "popup.html"
 	},
 	"content_scripts": [{
-		"matches": ["https://*/*","http://*/*"],
+		"matches": ["https://*/*", "http://*/*"],
 		"js": ["assets/js/content.js"],
 		"run_at": "document_end"
 	}],
@@ -27,6 +27,6 @@
 		"page": "background.html"
 	},
 	"web_accessible_resources": [ "assets/up.png", "assets/down.png", "assets/left.png", "assets/right.png" ],
-	"permissions": ["storage", "notifications", "tabs"],
+	"permissions": ["storage", "notifications", "tabs", "bookmarks"],
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

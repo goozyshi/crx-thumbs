@@ -38,33 +38,54 @@ export const actionMixin = {
     },
     // 加载
     G_reload () {
-      console.log(`G_reload`)
-      window.load()
+      location.reload()
     },
     G_reloadClear () {
-      console.log(`G_reloadClear`)
-    },
-    G_reloadAll () {
-      console.log(`G_reloadAll`)
+      location.reload(true)
     },
     // 标签页导航
     G_baiduTab () {
-      console.log(`G_baiduTab`)
-      chrome.runtime.sendMessage({greeting: "hello"}, (res) => {
-        console.log(res.farewell);
+      chrome.runtime.sendMessage({action: 'G_baiduTab'}, (res) => {
+        console.log(res)
+      })
+    },
+    G_googleTab () {
+      chrome.runtime.sendMessage({action: 'G_googleTab'}, (res) => {
+        console.log(res)
       })
     },
     G_leftTab () {
-      console.log(`G_leftTab`)
+      chrome.runtime.sendMessage({action: 'G_leftTab'}, (res) => {
+        console.log(res)
+      })
     },
     G_rightTab () {
       console.log(`G_rightTab`)
+      chrome.runtime.sendMessage({action: 'G_rightTab'}, (res) => {
+        console.log(res)
+      })
     },
     G_firstTab () {
       console.log(`G_firstTab`)
+      chrome.runtime.sendMessage({action: 'G_firstTab'}, (res) => {
+        console.log(res)
+      })      
     },
     G_lastTab () {
       console.log(`G_lastTab`)
+      chrome.runtime.sendMessage({action: 'G_lastTab'}, (res) => {
+        console.log(res)
+      })
+    },
+    G_closeTab () {
+      chrome.runtime.sendMessage({action: 'G_closeTab'}, (res) => {
+        console.log(res)
+      })
+    },
+    G_bookmark () {
+      chrome.runtime.sendMessage({action: 'G_bookmark'}, (res) => {
+        console.log(res)
+      })
     }
   }
 }
@@ -232,15 +253,15 @@ export const gestureMixin = {
         }, {
           value: 'G_reloadClear',
           label: '强制刷新(无缓存)'
-        }, {
-          value: 'G_reloadAll',
-          label: '刷新所有标签页'
         }]
       }, {
         label: '标签页导航',
         options: [{
           value: 'G_baiduTab',
           label: '新增百度标签页'
+        }, {
+          value: 'G_googleTab',
+          label: '当前页打开google'
         }, {
           value: 'G_leftTab',
           label: '左侧标签页'
@@ -253,6 +274,15 @@ export const gestureMixin = {
         }, {
           value: 'G_lastTab',
           label: '尾标签页'
+        }, {
+          value: 'G_closeTab',
+          label: '关闭当前标签'
+        }]
+      }, {
+        label: '其他',
+        options: [{
+          value: 'G_bookmark',
+          label: '添加书签'
         }]
       }]
     }

@@ -1,6 +1,3 @@
-<template>
-  <div id="content"></div>
-</template>
 <script>
 import { actionMixin, canvasMixin } from './mixin'
 export default {
