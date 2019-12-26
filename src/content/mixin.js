@@ -60,19 +60,16 @@ export const actionMixin = {
       })
     },
     G_rightTab () {
-      console.log(`G_rightTab`)
       chrome.runtime.sendMessage({action: 'G_rightTab'}, (res) => {
         console.log(res)
       })
     },
     G_firstTab () {
-      console.log(`G_firstTab`)
       chrome.runtime.sendMessage({action: 'G_firstTab'}, (res) => {
         console.log(res)
       })      
     },
     G_lastTab () {
-      console.log(`G_lastTab`)
       chrome.runtime.sendMessage({action: 'G_lastTab'}, (res) => {
         console.log(res)
       })
